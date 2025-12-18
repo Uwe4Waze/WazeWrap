@@ -220,6 +220,7 @@
     }
 
     async function initializeToastr() {
+		debugger;
         let toastrSettings = {};
         try {
             function loadSettings() {
