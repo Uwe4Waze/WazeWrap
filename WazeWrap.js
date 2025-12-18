@@ -22,6 +22,23 @@ var WazeWrap = {};
     // const WW_URL = 'https://cdn.jsdelivr.net/gh/WazeDev/WazeWrap@latest/WazeWrapLib.js'; //'https://cdn.staticaly.com/gh/WazeDev/WazeWrap/master/WazeWrapLib.js?env=dev';
     const WW_URL = 'https://uwe4waze.github.io/WazeWrap/WazeWrapLib.js';
 
+	function getScript(url) {
+		new Promise((resolve, reject) => {
+  			const script = document.createElement('script');
+  			script.src = url;
+  			script.async = true;
+  			script.onerror = reject;
+  			script.onload = script.onreadystatechange = function() {
+    			const loadState = this.readyState;
+    			if (loadState && loadState !== 'loaded' && loadState !== 'complete') {
+					return;
+				};
+    			script.onload = script.onreadystatechange = null;
+    			resolve();
+  			};
+  		document.head.appendChild(script);
+		})
+
     async function init(){
         const sandboxed = typeof unsafeWindow !== 'undefined';
         const pageWindow = sandboxed ? unsafeWindow : window;
@@ -33,7 +50,8 @@ var WazeWrap = {};
             pageWindow.WazeWrap = WazeWrap;
         }
         if (sandboxed) window.WazeWrap = WazeWrap;
-        if (!wwAvailable) await $.getScript(WW_URL);
+//        if (!wwAvailable) await $.getScript(WW_URL);
+        if (!wwAvailable) await getScript(WW_URL);
     }
     
     function bootstrap(tries = 1) {
