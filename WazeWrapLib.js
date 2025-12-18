@@ -1,4 +1,4 @@
-/* global W */
+*/* global W */
 /* global WazeWrap */
 /* global & */
 /* jshint esversion:6 */
@@ -251,7 +251,14 @@
                 $('<style type="text/css">.toast-container-wazedev > div {opacity: 0.95;} .toast-top-center-wide {top: 32px;}</style>')
             );
 
-            await $.getScript('//cdn.statically.io/gh/WazeDev/toastr@master/build/toastr.min.js');
+//            await $.getScript('//cdn.statically.io/gh/WazeDev/toastr@master/build/toastr.min.js');
+			await getScript('https://cdn.statically.io/gh/WazeDev/toastr@master/build/toastr.min.js');
+				.then(() => {
+  					console.log('Loaded', dummy.text());
+				});
+				.catch(() => {
+  					console.error('Could not load script');
+				});
 		wazedevtoastr.options = {
 		    target: '#map',
 		    timeOut: 6000,
@@ -2326,4 +2333,21 @@
             });
         };
     }
+
+	function getScript(url) {
+		new Promise((resolve, reject) => {
+  			const script = document.createElement('script');
+  			script.src = url;
+  			script.async = true;
+  			script.onerror = reject;
+  			script.onload = script.onreadystatechange = function() {
+    			const loadState = this.readyState;
+    			if (loadState && loadState !== 'loaded' && loadState !== 'complete') {
+					return;
+				};
+    			script.onload = script.onreadystatechange = null;
+    			resolve();
+  			};
+  		document.head.appendChild(script);
+		})
 }.call(this));
